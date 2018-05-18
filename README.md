@@ -17,3 +17,6 @@ Et le modèle 3D :
 
 ## Circuit Arduino
 ![circuit](img/circuit.PNG)
+
+## Construction du boitier
+![croquis](img/croquis.png)
