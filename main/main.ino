@@ -22,7 +22,7 @@ const int butn_start_2 = 10;
 bool just_ended = false, saved = false;
 int choice = 0;
 
-const String shuffles[12] = {'F', 'R', 'L', 'U', 'D', 'B', 'f', 'r', 'l', 'u', 'd', 'b'};
+const char shuffles[12] = {'F', 'R', 'L', 'U', 'D', 'B', 'f', 'r', 'l', 'u', 'd', 'b'};
 
 void setup() {
   pinMode(butn_start_1, INPUT);
@@ -285,10 +285,8 @@ void count() {
   }
 }
 
-
 string getShuffleString(int len) {
-  
-  string strShuffle = "";
+  String strShuffle = "";
   for (int i = 0; i < len; i++) {
     int randNumber = random(12);
     strShuffle += shuffles[randNumber];
