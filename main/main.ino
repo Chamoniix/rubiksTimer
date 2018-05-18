@@ -44,20 +44,12 @@ void loop() {
   affichage();
 }
 
-void count() {
-  if (state == states[2]) {
-    b = millis();
-    time_millis = (b - a);
-    time_int = round(time_millis);
-    m = time_int % 1000;
-    ss = ((time_int - m) / 1000) % 60;
-    mm = (time_int - ss*1000 - m) / 60000;
-  }
-}
-
-
 void affichage() {
   screen.setCursor(0, 0);
+  
+  /********************************/
+  /*          menu                */
+  /********************************/
   if(state == states[0]){
     String str = "";
     if (choice == 0)
@@ -65,19 +57,16 @@ void affichage() {
     else
       str.concat(" ");
     str.concat(" Jouer             ");
-    
     if (choice == 2)
       str.concat(">");
     else
       str.concat(" ");
     str.concat(" Leaderboard       ");
-    
     if (choice == 1)
       str.concat(">");
     else
       str.concat(" ");
     str.concat(" Melanger          ");
-    
     if (choice == 3)
       str.concat(">");
     else
@@ -87,16 +76,27 @@ void affichage() {
     screen.setCursor(0, 0);
     screen.print(str);  
   }
+  
+  /********************************/
+  /*       wait_for_start         */
+  /********************************/
   if(state == states[1]){
-    screen.print("Both hands on");  
+    screen.print("Place tes mains sur");  
     screen.setCursor(0,3);
-    screen.print("buttons !");
-    
+    screen.print("les bouttons !");
   }
+  
+  /********************************/
+  /*            running           */
+  /********************************/
   else if (state == states[2]){
     screen.setCursor(6,1);
     screen.print(String(mm) + ":" + String(ss) + ":" + String(m));  
   }
+  
+  /********************************/
+  /*          stoped              */
+  /********************************/
   else if (state == states[3]){
      if (just_ended) {
       for(int i=0; i<3; i++) {
@@ -114,7 +114,12 @@ void affichage() {
     screen.setCursor(0,2);
     screen.print("Valider cet essai ? YES               NO");
   }
+  
+  /********************************/
+  /*           saving             */
+  /********************************/
   else if (state == states[4]){
+	  // TODO
     if (saved == false) {
       int address = 0;
       EEPROM.put(address,mm);
@@ -129,28 +134,39 @@ void affichage() {
     delay(3000);
     state = states[0];
   }
+  
+  /********************************/
+  /*           leaderboard        */ 
+  /********************************/
   else if (state == states[5]){
+	  // TODO
     screen.setCursor(3,1);
     screen.print("1. Hugo");  
-    delay(3000);
-    state = states[0];
   }
+  
+  /********************************/
+  /*          melanger            */
+  /********************************/
   else if (state == states[6]){
+	  // TODO : Is it good ?
+	string str = getShuffleString(15);
     screen.setCursor(0,1);
-    screen.print("FRUU'FR2BLLF");  
-    delay(3000);
-    state = states[0];
+    screen.print(str);
   }
+  
+  /********************************/
+  /*           fun                */
+  /********************************/
   else if (state == states[7]){
     screen.setCursor(3,1);
-    screen.print("FUUUUUUUUUN");  
-    delay(3000);
-    state = states[0];
+    screen.print("FUUUUUUUUUN");
   }
 }
 
-
 void isButnPress() {
+  /********************************/
+  /*          menu                */
+  /********************************/
   if (state == states[0]) {
     if(digitalRead(butn_start_1) == HIGH) {
       if (choice == 3)
@@ -172,10 +188,14 @@ void isButnPress() {
       delay(500);
     }  
   }
+  
+  /********************************/
+  /*       wait_for_start         */
+  /********************************/
   if (state == states[1]) {
     if(digitalRead(butn_start_1) == HIGH && digitalRead(butn_start_2) == HIGH) { 
       screen.clear();
-      screen.print("Go when you are ready !");
+      screen.print("Commence quand tu es pret !");
       while(!(digitalRead(butn_start_1) == LOW && digitalRead(butn_start_2) == LOW)) {
       }
       screen.clear();
@@ -184,6 +204,10 @@ void isButnPress() {
       delay(500);
     }  
   }
+  
+  /********************************/
+  /*            running           */
+  /********************************/
   else if(state == states[2]) {
     if(digitalRead(butn_start_1) == HIGH && digitalRead(butn_start_2) == HIGH) { 
       screen.clear();
@@ -192,6 +216,10 @@ void isButnPress() {
       delay(500);
     }
   }
+  
+  /********************************/
+  /*          stoped              */
+  /********************************/
   else if (state == states[3]) {
     if(digitalRead(butn_start_2) == HIGH) {
       screen.clear();
@@ -204,7 +232,59 @@ void isButnPress() {
       delay(500);
     }
   }
+  
+  /********************************/
+  /*           saving             */
+  /********************************/
+  else if (state == states[4]){
+	// TODO
+  }
+  
+  /********************************/
+  /*           leaderboard        */ 
+  /********************************/
+  else if (state == states[5]){
+	if(digitalRead(butn_start_1) == HIGH || digitalRead(butn_start_2) == HIGH) { 
+      screen.clear();
+      state = states[0];
+      delay(500);
+    }
+  }
+  
+  /********************************/
+  /*          melanger            */
+  /********************************/
+  else if (state == states[6]) {
+	if(digitalRead(butn_start_1) == HIGH || digitalRead(butn_start_2) == HIGH) { 
+      screen.clear();
+      state = states[0];
+      delay(500);
+    }  
+  }
+  
+  /********************************/
+  /*           fun                */
+  /********************************/
+  else if (state == states[7]){
+    if(digitalRead(butn_start_1) == HIGH || digitalRead(butn_start_2) == HIGH) { 
+      screen.clear();
+      state = states[0];
+      delay(500);
+    }
+  }
 }
+
+void count() {
+  if (state == states[2]) {
+    b = millis();
+    time_millis = (b - a);
+    time_int = round(time_millis);
+    m = time_int % 1000;
+    ss = ((time_int - m) / 1000) % 60;
+    mm = (time_int - ss*1000 - m) / 60000;
+  }
+}
+
 
 string getShuffleString(int len) {
   
